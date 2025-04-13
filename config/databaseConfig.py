@@ -10,7 +10,6 @@ class DatabaseConfig():
             if value is None:
                 raise ValueError(f"-------------------Missing Value of key: {key}-------------------")
 
-
 # Inheritance from Class DatabaseConfig
 # SubClass
 @dataclass
@@ -33,7 +32,6 @@ class RedisConfig(DatabaseConfig):
     user: str
     password: str
     database: str
-
 
 def get_database_config() -> Dict[str, DatabaseConfig]:
     load_dotenv()

@@ -1,5 +1,5 @@
 import mysql.connector
-from config.mySqlConfig import get_info_db_config
+from config.databaseConfig import get_info_db_config
 from mysql.connector import Error
 
 def connect_mysql(config):

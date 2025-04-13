@@ -3,7 +3,7 @@
 import os.path
 from typing import Optional, List, Dict
 from pyspark.sql import SparkSession
-from config.mySqlConfig import get_info_db_config
+from config.databaseConfig import get_info_db_config
 
 def create_spark_session(
         app_name: str,

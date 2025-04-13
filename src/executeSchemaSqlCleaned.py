@@ -1,10 +1,8 @@
 import mysql.connector
 from config.mySqlConfig import get_info_db_config
-from pathlib import Path
 from mysql.connector import Error
 
 def connect_mysql(config):
-
     try:
         connection = mysql.connector.connect(**config)
         return connection
@@ -18,7 +16,9 @@ def create_database(cursor, database_name):
 def execute_schema_sql(cursor, sql_file_path):
     with open(sql_file_path, "r") as file:
         sql_script = file.read()
-    cmds = [cmd.strip() for cmd in sql_script.split(";") if cmd.strip()]
+
+    cmds = [cmd for cmd in sql_script.split(";")]
+    print(f"-------------------CMDS: {cmds}------------------------")
 
     for cmd in cmds:
         try:
@@ -42,8 +42,10 @@ def main():
         connection.database = info_config["database"]
 
         # Execute schemaSql
-        sql_file_path = "E:\study\TU_HOC\DE\DE_ETL_MEET\data_synchronization_problem\src\schema.sql"
+        sql_file_path = "../sql/schema.sql"
         execute_schema_sql(cursor, sql_file_path)
+
+        # Confirm
         connection.commit()
         print(f"------------File schemaSql has been executed sucessfully------------")
     except Error as err:

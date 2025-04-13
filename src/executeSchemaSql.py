@@ -11,7 +11,7 @@ db_config = {
 connection = mysql.connector.connect(**db_config)
 print("database connected")
 database_name = "github_data"
-sql_file_path = "E:\study\TU_HOC\DE\DE_ETL_MEET\data_synchronization_problem\src\schema.sql"
+sql_file_path = "/sql/schema.sql"
 cursor = connection.cursor()
 cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database_name}")
 print("database created")

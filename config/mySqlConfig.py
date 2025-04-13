@@ -22,7 +22,6 @@ def get_info_db_config():
         "password": password,
     }
 
-
 info_config = get_info_db_config()
 print(info_config)
 

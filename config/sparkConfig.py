@@ -1,3 +1,5 @@
+# This file has the function of ConfigSpark to create a SparkSession, after connect to MySQL
+
 import os.path
 from typing import Optional, List, Dict
 from pyspark.sql import SparkSession
@@ -68,6 +70,7 @@ def connect_to_mysql(spark: SparkSession, config: Dict[str, str], table_name: st
 
 jar_path = "..\lib\mysql-connector-j-9.2.0.jar"
 
+# Init var Spark with function CreateSparkSession
 spark = create_spark_session(
         app_name = "datdz",
         master_url = "local[*]",

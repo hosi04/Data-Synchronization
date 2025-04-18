@@ -1,9 +1,7 @@
-from enum import unique
 from pathlib import Path
-from wsgiref.validate import validator
 from mysql.connector import Error
 
-
+# -----------------------------------------MONGO DB-----------------------------------------
 def create_mongodb_schema(db):
     collections = db.list_collection_names()
     if "Users" not in collections:
@@ -41,6 +39,7 @@ def validate_mongodb_schema(db):
     if "Users" not in collections:
         raise Exception("-----------------------Missing 'Users' collection-----------------------")
 
+# -----------------------------------------MYSQL-----------------------------------------
 def create_mysql_schema(connection, cursor):
     SQL_FILE_PATH = Path("../sql/schema.sql")
     DATABASE_NAME = "github_data"
@@ -75,3 +74,22 @@ def validate_mysql_schema(cursor):
     user = cursor.fetchone()
     if not user:
         raise ValueError("User not found")
+
+# -----------------------------------------REDIS-----------------------------------------
+def create_redis_schema(redis_client):
+    redis_client.hset("user:1", mapping={
+        "user_id": 1,
+        "login": "GoogleCodeExporter",
+        "gravatar_id": "",
+        "avatar_url": "https://www.google.com/accounts/o8/avatar",
+        "url": "https://www.google.com/accounts/o8/login"
+    })
+
+    redis_client.hset("user:2", mapping={
+        "user_id": 2,
+        "login": "MicrosoftCodeExporter",
+        "gravatar_id": "",
+        "avatar_url": "https://www.google.com/accounts/o8/avatar",
+        "url": "https://www.google.com/accounts/o8/login"
+    })
+    redis_client.sadd("users", 1, 2)

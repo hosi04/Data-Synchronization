@@ -76,20 +76,41 @@ def validate_mysql_schema(cursor):
         raise ValueError("User not found")
 
 # -----------------------------------------REDIS-----------------------------------------
-def create_redis_schema(redis_client):
-    redis_client.hset("user:1", mapping={
-        "user_id": 1,
-        "login": "GoogleCodeExporter",
-        "gravatar_id": "",
-        "avatar_url": "https://www.google.com/accounts/o8/avatar",
-        "url": "https://www.google.com/accounts/o8/login"
-    })
+# def create_redis_schema(redis_client):
+#     redis_client.hset("user:1", mapping={
+#         "user_id": 1,
+#         "login": "GoogleCodeExporter",
+#         "gravatar_id": "",
+#         "avatar_url": "https://www.google.com/accounts/o8/avatar",
+#         "url": "https://www.google.com/accounts/o8/login"
+#     })
+#
+#     redis_client.hset("user:2", mapping={
+#         "user_id": 2,
+#         "login": "MicrosoftCodeExporter",
+#         "gravatar_id": "",
+#         "avatar_url": "https://www.google.com/accounts/o8/avatar",
+#         "url": "https://www.google.com/accounts/o8/login"
+#     })
+#     redis_client.sadd("users", 1, 2)
 
-    redis_client.hset("user:2", mapping={
-        "user_id": 2,
-        "login": "MicrosoftCodeExporter",
-        "gravatar_id": "",
-        "avatar_url": "https://www.google.com/accounts/o8/avatar",
-        "url": "https://www.google.com/accounts/o8/login"
-    })
-    redis_client.sadd("users", 1, 2)
+def create_redis_schema(redis_client):
+    try:
+        redis_client.flushdb()
+
+        redis_client.set("user:1:login","GoogleCodeExporter")
+        redis_client.set("user:1:gravatar_id","")
+        redis_client.set("user:1:avatar_url","https://www.google.com/accounts/o8/avatar")
+        redis_client.set("user:1:url","https://www.google.com/accounts/o8/login")
+        redis_client.sadd("user_id","user:1")
+
+        print("--------------------Add data to redis successfully-----------------------")
+    except Exception as e:
+        raise Exception(f"--------------------Failed to add data to redis! {e}-------------------------") from e
+
+def validate_redis_schema(redis_client):
+    if not redis_client.get("user:1:login") == "GoogleCodeExporter":
+        raise ValueError("--------------------Failed to add data to redis!-------------------------")
+
+    if not redis_client.sismember("user_id", "user:1"):
+        raise ValueError("--------------------User not set in Redis!-----------------------")

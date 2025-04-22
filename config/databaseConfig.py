@@ -19,6 +19,7 @@ class MySqlConfig(DatabaseConfig):
     user: str
     password: str
     database: str
+    jdbc_url: str
 
 @dataclass
 class MongoDBConfig(DatabaseConfig):
@@ -41,7 +42,8 @@ def get_database_config() -> Dict[str, DatabaseConfig]:
             port = int(os.getenv("MYSQL_PORT")),
             user = os.getenv("MYSQL_USER"),
             password = os.getenv("MYSQL_PASSWORD"),
-            database = os.getenv("MYSQL_DATABASE")
+            database = os.getenv("MYSQL_DATABASE"),
+            jdbc_url = os.getenv("MYSQL_JDBC_URL")
         ),
         "mongodb": MongoDBConfig(
             uri = os.getenv("MONGODBB_URI"),

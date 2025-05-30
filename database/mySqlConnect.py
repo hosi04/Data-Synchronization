@@ -13,7 +13,6 @@ class mySqlConnect:
             "port": self.config.port,
             "user": self.config.user,
             "password": self.config.password,
-            # "database": self.config.database,
         }
 
         try:

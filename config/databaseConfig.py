@@ -19,6 +19,7 @@ class MySqlConfig(DatabaseConfig):
     user: str
     password: str
     database: str
+    # Add new by Hosi
     jdbc_url: str
 
 @dataclass
@@ -43,6 +44,7 @@ def get_database_config() -> Dict[str, DatabaseConfig]:
             user = os.getenv("MYSQL_USER"),
             password = os.getenv("MYSQL_PASSWORD"),
             database = os.getenv("MYSQL_DATABASE"),
+            # Add new by Hosi
             jdbc_url = os.getenv("MYSQL_JDBC_URL")
         ),
         "mongodb": MongoDBConfig(

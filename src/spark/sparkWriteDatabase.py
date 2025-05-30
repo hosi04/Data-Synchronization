@@ -1,11 +1,8 @@
 from typing import Dict
 from database.mySqlConnect import mySqlConnect
-
 from pyspark.sql import DataFrame, SparkSession
 
-
 class sparkWriteDatabase:
-
     def __init__(self, spark: SparkSession, db_config: Dict):
         self.spark = spark
         self.db_conf = db_config

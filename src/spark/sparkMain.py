@@ -67,10 +67,5 @@ def main():
     )
     print("-------------------------Ghi dữ liệu vào MySQL thành công-------------------------")
 
-    # writer = write_to_users.write
-    # writer = writer.format("mongodb").mode("append")
-    # writer.save()
-    # print("-------------------------Ghi dữ liệu vào MongoDB thành công-------------------------")
-
 if __name__ == "__main__":
     main()

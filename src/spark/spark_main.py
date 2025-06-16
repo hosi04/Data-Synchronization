@@ -4,6 +4,8 @@ from config.spark_config import SparkConnect
 from pyspark.sql.types import *
 from spark_write_database import SparkWriteDatabase
 from config.spark_config import get_spark_config
+from src.spark import spark_write_database
+
 
 def main():
     db_config = get_database_config()
@@ -54,6 +56,9 @@ def main():
 
     df_write = SparkWriteDatabase(spark_connect.spark, spark_config)
     df_write.spark_write_all_database(df_write_database, mode="append")
+
+    df_validate = SparkWriteDatabase(spark_connect.spark, spark_config)
+    df_validate.validate_spark_mysql(df_write_database, spark_config["mysql"]["table"], spark_config["mysql"]["jdbc_url"], spark_config["mysql"]["config"])
 
     spark_connect.stop()
 

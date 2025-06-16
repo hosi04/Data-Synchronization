@@ -1,20 +1,23 @@
 import mysql.connector
 from mysql.connector import Error
 
-class mySqlConnect:
-    def __init__(self, config):
-        self.config = config
+class MySqlConnect:
+    # def __init__(self, config):
+    def __init__(self, host, port, user, password):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
         self.connection = None
         self.cursor = None
 
     def connect(self):
         config = {
-            "host": self.config.host,
-            "port": self.config.port,
-            "user": self.config.user,
-            "password": self.config.password,
+            "host": self.host,
+            "port": self.port,
+            "user": self.user,
+            "password": self.password
         }
-
         try:
             self.connection = mysql.connector.connect(**config)
             self.cursor = self.connection.cursor()

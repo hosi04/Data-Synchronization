@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 from dotenv import load_dotenv
 import os
 
@@ -19,13 +19,15 @@ class MySqlConfig(DatabaseConfig):
     user: str
     password: str
     database: str
-    # Add new by Hosi
-    jdbc_url: str
+    jar_path: Optional[str] = None
+    table: str = "users"
 
 @dataclass
 class MongoDBConfig(DatabaseConfig):
     uri: str
     database: str
+    jar_path: Optional[str] = None
+    collection: str = "users"
 
 @dataclass
 class RedisConfig(DatabaseConfig):
@@ -34,6 +36,8 @@ class RedisConfig(DatabaseConfig):
     user: str
     password: str
     database: str
+    jar_path: Optional[str] = None
+    key_column: str = "id"
 
 def get_database_config() -> Dict[str, DatabaseConfig]:
     load_dotenv()
@@ -44,22 +48,22 @@ def get_database_config() -> Dict[str, DatabaseConfig]:
             user = os.getenv("MYSQL_USER"),
             password = os.getenv("MYSQL_PASSWORD"),
             database = os.getenv("MYSQL_DATABASE"),
-            # Add new by Hosi
-            jdbc_url = os.getenv("MYSQL_JDBC_URL")
+            jar_path = os.getenv("MYSQL_JAR_PATH")
         ),
         "mongodb": MongoDBConfig(
             uri = os.getenv("MONGODBB_URI"),
-            database = os.getenv("MONGODB_DATABASE")
+            database = os.getenv("MONGODB_DATABASE"),
+            jar_path = os.getenv("MONGO_PACKAGE_PATH")
         ),
         "redis": RedisConfig(
             host = os.getenv("REDIS_HOST"),
             user = os.getenv("REDIS_USER"),
             password = os.getenv("REDIS_PASSWORD"),
             port = int(os.getenv("REDIS_PORT")),
-            database = os.getenv("REDIS_DATABASE")
+            database = os.getenv("REDIS_DATABASE"),
+            jar_path = os.getenv("REDIS_JAR_PATH")
         )
     }
     for key,value in config.items():
         value.validate()
-
     return config

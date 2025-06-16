@@ -1,44 +1,6 @@
 from pathlib import Path
 from mysql.connector import Error
 
-# -----------------------------------------MONGO DB-----------------------------------------
-def create_mongodb_schema(db):
-    collections = db.list_collection_names()
-    if "Users" not in collections:
-        # db.drop_collection('Users')
-        db.create_collection("Users", validator={
-            "$jsonSchema": {
-                "bsonType": "object",
-                "required": ["user_id", "login"],
-                "properties": {
-                    "user_id": {
-                        "bsonType": "int"
-                    },
-                    "login": {
-                        "bsonType": "string"
-                    },
-                    "gravatar_id": {
-                        "bsonType": ["string", "null"]
-                    },
-                    "avatar_url": {
-                        "bsonType": ["string", "null"]
-                    },
-                    "url": {
-                        "bsonType": ["string", "null"]
-                    }
-                }
-            }
-        })
-        # Config primary key
-        db.Users.create_index("user_id", unique = True)
-    else:
-        print("Collection already exists")
-
-def validate_mongodb_schema(db):
-    collections = db.list_collection_names()
-    if "Users" not in collections:
-        raise Exception("-----------------------Missing 'Users' collection-----------------------")
-
 # -----------------------------------------MYSQL-----------------------------------------
 def create_mysql_schema(connection, cursor):
     SQL_FILE_PATH = Path("../sql/schema.sql")
@@ -67,33 +29,53 @@ def validate_mysql_schema(cursor):
     # print(cursor.fetchall())
     tables = [item[0] for item in cursor.fetchall()]
     # print(tables)
-    if "Users" and "Repositories" not in tables:
+    if "users" and "repositories" not in tables:
         raise ValueError("---------------------Missing table-----------------------")
 
-    cursor.execute("SELECT * FROM Users WHERE user_id = 1")
+    cursor.execute("SELECT * FROM users WHERE user_id = 1")
     user = cursor.fetchone()
     if not user:
         raise ValueError("User not found")
 
-# -----------------------------------------REDIS-----------------------------------------
-# def create_redis_schema(redis_client):
-#     redis_client.hset("user:1", mapping={
-#         "user_id": 1,
-#         "login": "GoogleCodeExporter",
-#         "gravatar_id": "",
-#         "avatar_url": "https://www.google.com/accounts/o8/avatar",
-#         "url": "https://www.google.com/accounts/o8/login"
-#     })
-#
-#     redis_client.hset("user:2", mapping={
-#         "user_id": 2,
-#         "login": "MicrosoftCodeExporter",
-#         "gravatar_id": "",
-#         "avatar_url": "https://www.google.com/accounts/o8/avatar",
-#         "url": "https://www.google.com/accounts/o8/login"
-#     })
-#     redis_client.sadd("users", 1, 2)
+# -----------------------------------------MONGO DB-----------------------------------------
+def create_mongodb_schema(db):
+    collections = db.list_collection_names()
+    db.drop_collection('users')
+    if "users" not in collections:
+        db.create_collection("users", validator={
+            "$jsonSchema": {
+                "bsonType": "object",
+                "required": ["user_id", "login"],
+                "properties": {
+                    "user_id": {
+                        "bsonType": "int"
+                    },
+                    "login": {
+                        "bsonType": "string"
+                    },
+                    "gravatar_id": {
+                        "bsonType": ["string", "null"]
+                    },
+                    "avatar_url": {
+                        "bsonType": ["string", "null"]
+                    },
+                    "url": {
+                        "bsonType": ["string", "null"]
+                    }
+                }
+            }
+        })
+        # Config primary key
+        db.users.create_index("user_id", unique = True)
+    else:
+        print("Collection already exists")
 
+def validate_mongodb_schema(db):
+    collections = db.list_collection_names()
+    if "users" not in collections:
+        raise Exception("-----------------------Missing 'users' collection-----------------------")
+
+# -----------------------------------------REDIS-----------------------------------------
 def create_redis_schema(redis_client):
     try:
         redis_client.flushdb()

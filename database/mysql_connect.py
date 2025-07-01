@@ -17,6 +17,7 @@ class MySqlConnect:
             "user": self.user,
             "password": self.password
         }
+
         try:
             self.connection = mysql.connector.connect(**config)
             self.cursor = self.connection.cursor()

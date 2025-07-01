@@ -66,4 +66,5 @@ def get_database_config() -> Dict[str, DatabaseConfig]:
     }
     for key,value in config.items():
         value.validate()
+
     return config

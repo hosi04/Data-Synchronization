@@ -58,7 +58,6 @@ def main():
     df_write.spark_write_all_database(df_write_database)
 
     df_validate = SparkWriteDatabase(spark_connect.spark, spark_config)
-    df_validate.spark_validate(df_write_database)
     spark_connect.stop()
 
     # config = get_spark_config()

@@ -2,7 +2,6 @@ import mysql.connector
 from mysql.connector import Error
 
 class MySqlConnect:
-    # def __init__(self, config):
     def __init__(self, host, port, user, password):
         self.host = host
         self.port = port

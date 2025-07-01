@@ -1,16 +1,18 @@
 from pyspark.sql.functions import col, lit
+from pyspark.sql.types import *
+
 from config.database_config import get_database_config
 from config.spark_config import SparkConnect
-from pyspark.sql.types import *
-from spark_write_database import SparkWriteDatabase
 from config.spark_config import get_spark_config
+from spark_write_database import SparkWriteDatabase
+
 
 def main():
     db_config = get_database_config()
 
     jar_packages = [
-        db_config["mysql"].jar_path, # Use jar packages
-        db_config["mongodb"].jar_path # Use jar packages
+        db_config["mysql"].jar_path,
+        db_config["mongodb"].jar_path
     ]
 
     spark_connect = SparkConnect(
@@ -39,23 +41,30 @@ def main():
         ]), nullable=True)
     ])
 
-    df = spark_connect.spark.read.schema(schema_read_file).json(r"E:\study\TU_HOC\DE\DE_ETL_MEET\data_synchronization_problem\data\2015-03-01-17.json")
+    df = spark_connect.spark.read.schema(schema_read_file).json("/home/ngocthanh/Prime/learn-myself/data-engineer/de-datdang/data-synchronization-problem/data/2015-03-01-17.json")
 
-    df_write_database = df.withColumn('spark_temp', lit('sparkwriter')).select(
+    df_write_database = df.withColumn('spark_temp', lit('sparkwrite')).select(
         col("actor.id").alias("user_id"),  # ép kiểu ở đây
         col("actor.login").alias("login"),
         col("actor.gravatar_id").alias("gravatar_id"),
-        col("actor.url").alias("url"),
         col("actor.avatar_url").alias("avatar_url"),
+        col("actor.url").alias("url"),
         col('spark_temp').alias('spark_temp')
     )
 
     spark_config = get_spark_config()
 
     df_write = SparkWriteDatabase(spark_connect.spark, spark_config)
-    df_write.spark_write_all_database(df_write_database, mode="append")
+    df_write.spark_write_all_database(df_write_database)
 
+    df_validate = SparkWriteDatabase(spark_connect.spark, spark_config)
+    df_validate.spark_validate(df_write_database)
     spark_connect.stop()
+
+    # config = get_spark_config()
+    # with MySqlConnect(config["mysql"]["config"]["host"], config["mysql"]["config"]["port"], config["mysql"]["config"]["user"], config["mysql"]["config"]["password"]) as mysql_client:
+    #     connection, cursor = mysql_client.connection, mysql_client.cursor
+    #     create_mysql_trigger(connection, cursor)
 
 if __name__ == "__main__":
     main()

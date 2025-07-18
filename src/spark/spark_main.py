@@ -58,12 +58,9 @@ def main():
     df_write.spark_write_all_database(df_write_database)
 
     df_validate = SparkWriteDatabase(spark_connect.spark, spark_config)
+    df_validate.spark_validate(df_write_database)
     spark_connect.stop()
 
-    # config = get_spark_config()
-    # with MySqlConnect(config["mysql"]["config"]["host"], config["mysql"]["config"]["port"], config["mysql"]["config"]["user"], config["mysql"]["config"]["password"]) as mysql_client:
-    #     connection, cursor = mysql_client.connection, mysql_client.cursor
-    #     create_mysql_trigger(connection, cursor)
 
 if __name__ == "__main__":
     main()

@@ -59,29 +59,29 @@ def create_mysql_schema(connection, cursor):
         connection.rollback()
         raise Exception(f"Failed to create database schema: {e}") from e
 
-def create_mysql_trigger(connection, cursor):
-    TRIGGER_FILE_PATH = Path("/home/ngocthanh/Prime/LearnMyself/DataEngineer/DE_ETL_MEET/data_synchronization_problem/sql/trigger.sql")
-    DATABASE_NAME = "github_data"
-    try:
-        connection.database = DATABASE_NAME
-        with open(TRIGGER_FILE_PATH, 'r') as sql_file:
-            sql_script = sql_file.read()
-            delimiter = "DELIMITER //"
-            statements = sql_script.split(delimiter)
-            for statement in statements:
-                if statement.strip():
-                    if "CREATE TRIGGER" in statement.upper():
-                        cursor.execute("DELIMITER //")
-                        trigger_sql = statement.split("DELIMITER ;")[0].strip()
-                        cursor.execute(trigger_sql)
-                        cursor.execute("DELIMITER ;")
-                    else:
-                        cursor.execute(statement)
-                        connection.commit()
-                        print("SQL file executed successfully!")
-    except Error as e:
-        connection.rollback()
-        raise Exception(f"Failed to create trigger: {e}") from e
+# def create_mysql_trigger(connection, cursor):
+#     TRIGGER_FILE_PATH = Path("/home/ngocthanh/Prime/LearnMyself/DataEngineer/DE_ETL_MEET/data_synchronization_problem/sql/trigger.sql")
+#     DATABASE_NAME = "github_data"
+#     try:
+#         connection.database = DATABASE_NAME
+#         with open(TRIGGER_FILE_PATH, 'r') as sql_file:
+#             sql_script = sql_file.read()
+#             delimiter = "DELIMITER //"
+#             statements = sql_script.split(delimiter)
+#             for statement in statements:
+#                 if statement.strip():
+#                     if "CREATE TRIGGER" in statement.upper():
+#                         cursor.execute("DELIMITER //")
+#                         trigger_sql = statement.split("DELIMITER ;")[0].strip()
+#                         cursor.execute(trigger_sql)
+#                         cursor.execute("DELIMITER ;")
+#                     else:
+#                         cursor.execute(statement)
+#                         connection.commit()
+#                         print("SQL file executed successfully!")
+#     except Error as e:
+#         connection.rollback()
+#         raise Exception(f"Failed to create trigger: {e}") from e
 
 def validate_mysql_schema(cursor):
     # table has been existed?

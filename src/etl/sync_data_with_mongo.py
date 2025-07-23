@@ -1,5 +1,7 @@
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
+
+from config.database_config import get_database_config
 from config.spark_config import SparkConnect
 from pymongo import MongoClient
 from config.spark_config import get_spark_config
@@ -12,7 +14,7 @@ def process_batch_to_mongodb(df_batch, batch_id):
         mongo_db = spark_conf["mongo"]["database"]
         mongo_collection_name = spark_conf["mongo"]["collection"]
 
-        # Sử dụng foreachPartition để tối ưu kết nối MongoDB
+        # Sử dụng foreachPartition để tối ưu kết nối (Khong tao connect nhieu lan!) MongoDB
         df_batch.foreachPartition(lambda records: write_partition_to_mongodb(records, mongo_uri, mongo_db, mongo_collection_name))
 
 # Hàm ghi dữ liệu của từng partition vào MongoDB
@@ -65,11 +67,18 @@ def write_partition_to_mongodb(records, mongo_uri, mongo_db, mongo_collection_na
             client.close()
 
 def main():
+    database_config = get_database_config()
     jar_packages = [
         "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0",
         "org.postgresql:postgresql:42.7.3",
         "org.mongodb.spark:mongo-spark-connector_2.12:10.5.0"
     ]
+
+    spark_conf = {
+        "spark.mongodb.connection.uri": "{}".format(database_config["mongodb"].uri),
+        "spark.mongodb.database": "{}".format(database_config["mongodb"].database),
+        "spark.mongodb.collection": "users"
+    }
 
     # Khởi tạo SparkSession với cấu hình MongoDB
     spark = SparkConnect(
@@ -80,14 +89,14 @@ def main():
         driver_memory="2g",
         num_executors=3,
         jar_packages=jar_packages,
+        spark_conf=spark_conf,
         log_level="WARN"
     ).spark
 
-    # Thiết lập các tùy chọn MongoDB trực tiếp trong SparkSession
-    spark.conf.set('spark.mongodb.connection.uri', 'mongodb://thanhdepzai:thanhdepzaivailon@localhost:27017')
-    spark.conf.set('spark.mongodb.database', 'github_data')
-    spark.conf.set('spark.mongodb.collection', 'users')
-
+    # # Thiết lập các tùy chọn MongoDB trực tiếp trong SparkSession
+    # spark.conf.set('spark.mongodb.connection.uri', 'mongodb://thanhdepzai:thanhdepzaivailon@localhost:27017')
+    # spark.conf.set('spark.mongodb.database', 'github_data')
+    # spark.conf.set('spark.mongodb.collection', 'users')
 
     schemaKafka = StructType([
         StructField("user_id", IntegerType(), True),

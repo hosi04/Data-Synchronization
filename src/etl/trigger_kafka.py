@@ -62,6 +62,5 @@ def main():
                     producer.flush()  # Gọi flush sau khi gửi tất cả các bản ghi trong lô, send data into broker
                 time.sleep(1)  # Tránh lặp quá nhanh, kiểm tra định kỳ
 
-
 if __name__ == "__main__":
     main()

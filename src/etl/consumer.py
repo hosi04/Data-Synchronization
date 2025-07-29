@@ -7,3 +7,4 @@ while running:
     for tp, messages in msg.items():
         for message in messages:
             print("%s:%d:%d: key=%s value=%s" % (tp.topic, tp.partition, message.offset, message.key, message.value.decode('utf-8')))
+
